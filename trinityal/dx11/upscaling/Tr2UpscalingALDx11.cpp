@@ -4,8 +4,10 @@
 
 #if TRINITY_PLATFORM == TRINITY_DIRECTX11
 #include "Tr2UpscalingALDx11.h"
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 #include <upscaling/Tr2Fsr1Upscaling.h>
 #include "Tr2DlssUpscaling.h"
+#endif
 
 namespace TrinityALImpl
 {
@@ -28,9 +30,11 @@ Tr2UpscalingTechniqueDx11* CreateUpscalingTechnique( Tr2RenderContextAL& renderC
 	TrinityALImpl::Tr2UpscalingTechniqueDx11* techniqueImpl = nullptr;
 	switch( technique )
 	{
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 	case Tr2UpscalingAL::Technique::FSR1:
 		techniqueImpl = new Tr2Fsr1UpscalingTechnique( renderContext, technique, setting, frameGeneration, adapter );
 		break;
+#endif
 	default:
 		break;
 	}

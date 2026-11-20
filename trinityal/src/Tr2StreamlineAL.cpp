@@ -4,7 +4,7 @@
 #include "../include/Tr2StreamlineAL.h"
 #include "Tr2AdapterStructures.h"
 
-#if TRINITY_PLATFORM == TRINITY_DIRECTX12 || TRINITY_PLATFORM == TRINITY_DIRECTX11
+#if ( TRINITY_PLATFORM == TRINITY_DIRECTX12 || TRINITY_PLATFORM == TRINITY_DIRECTX11 ) && !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 
 #include <filesystem>
 #include <sl_security.h>

@@ -35,7 +35,7 @@ typedef uintptr_t Tr2WindowHandle;
 
 #include "include/TrinityALForward.h"
 
-#if ( TRINITY_PLATFORM == TRINITY_DIRECTX11 || TRINITY_PLATFORM == TRINITY_DIRECTX12 )
+#if ( TRINITY_PLATFORM == TRINITY_DIRECTX11 || TRINITY_PLATFORM == TRINITY_DIRECTX12 ) && !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 #include <GFSDK_Aftermath.h>
 #endif
 

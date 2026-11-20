@@ -4,6 +4,12 @@ cmake_minimum_required(VERSION 3.16)
 
 project(TrinityAL VERSION 1.0.0)
 
+# NVIDIA Aftermath, Streamline and FidelityFX are used by optional upscaling and
+# crash-marker paths. The DirectX 11 device, resource and draw path does not
+# call them. The default keeps the full link so an ordinary BUILD_DX11 build
+# is unchanged.
+option(TRINITY_AL_VENDOR_FEATURES "Link NVIDIA Aftermath, Streamline and FidelityFX FSR" ON)
+
 set(PUBLIC_HEADER_FILES
     ALResult.h
     BcDecompress.h
@@ -393,16 +399,18 @@ if(WIN32)
     set_shared_trinityal_properties(stub)
 endif()
 
-if(BUILD_FOR_PYTHON_2)
-    find_package(ImageIO REQUIRED NO_CMAKE_PATH)
-    add_library(CcpImageIO ALIAS ImageIO)
-else()
-    find_package(carbon-imageio CONFIG REQUIRED)
+if(NOT TARGET CcpImageIO)
+    if(BUILD_FOR_PYTHON_2)
+        find_package(ImageIO REQUIRED NO_CMAKE_PATH)
+        add_library(CcpImageIO ALIAS ImageIO)
+    else()
+        find_package(carbon-imageio CONFIG REQUIRED)
+    endif()
 endif()
 
 if(WIN32)
 
-    if (BUILD_DX11 OR BUILD_DX12)
+    if ((BUILD_DX11 OR BUILD_DX12) AND TRINITY_AL_VENDOR_FEATURES)
         if (BUILD_FOR_PYTHON_2)
             find_package(NvidiaAftermath REQUIRED)
             add_library(NVIDIA::Aftermath ALIAS Nvidia::Aftermath)
@@ -430,16 +438,22 @@ if(WIN32)
     
         ccp_add_library(TrinityAL_dx11 STATIC)
         target_compile_definitions(TrinityAL_dx11 PUBLIC TRINITY_PLATFORM=TRINITY_DIRECTX11)
-        target_link_libraries(TrinityAL_dx11 PUBLIC d3d11 
-                                                    dxgi
-                                                    dxguid
-                                                    NVIDIA::Aftermath  
-                                                    NVIDIA::Streamline 
-                                                    NVIDIA::Streamline::dlss-sr
-                                                    NVIDIA::Streamline::dlss-fg
-                                                    NVIDIA::Streamline::nis 
-                                                    AMD::FidelityFX::fsr
-                                                    legacy_stdio_definitions)
+        target_link_libraries(TrinityAL_dx11 PUBLIC d3d11 dxgi dxguid)
+        if(TRINITY_AL_VENDOR_FEATURES)
+            target_link_libraries(TrinityAL_dx11 PUBLIC NVIDIA::Aftermath
+                                                        NVIDIA::Streamline
+                                                        NVIDIA::Streamline::dlss-sr
+                                                        NVIDIA::Streamline::dlss-fg
+                                                        NVIDIA::Streamline::nis
+                                                        AMD::FidelityFX::fsr
+                                                        legacy_stdio_definitions)
+        else()
+            target_compile_definitions(TrinityAL_dx11 PRIVATE TRINITY_AL_NO_VENDOR_FEATURES)
+            add_executable(TrinityALDx11WarpSmoke tools/Dx11WarpSmoke.cpp)
+            target_compile_definitions(TrinityALDx11WarpSmoke PRIVATE TRINITY_PLATFORM=TRINITY_DIRECTX11 TRINITY_AL_NO_VENDOR_FEATURES TRINITY_AL_WITH_BLUE_EXPOSURE=0)
+            target_link_libraries(TrinityALDx11WarpSmoke PRIVATE TrinityAL_dx11)
+            target_include_directories(TrinityALDx11WarpSmoke PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+        endif()
         set_shared_trinityal_properties(dx11)
     endif()
 

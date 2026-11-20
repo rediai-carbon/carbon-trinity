@@ -2,7 +2,7 @@
 
 #pragma once
 
-#if TRINITY_PLATFORM == TRINITY_DIRECTX11
+#if TRINITY_PLATFORM == TRINITY_DIRECTX11 && !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 #include "Tr2UpscalingALDx11.h"
 #include "dx11/Tr2TextureALDx11.h"
 

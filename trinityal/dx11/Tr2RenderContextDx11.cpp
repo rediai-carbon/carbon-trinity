@@ -826,7 +826,9 @@ void Tr2RenderContextAL::Destroy() throw()
 	m_secondaryDefaultBackBuffer = Tr2TextureAL();
 	if( m_aftermathContext )
 	{
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 		GFSDK_Aftermath_ReleaseContextHandle( reinterpret_cast<GFSDK_Aftermath_ContextHandle>( m_aftermathContext ) );
+#endif
 		m_aftermathContext = nullptr;
 	}
 	m_context.Attach( &Tr2RenderContextImpl::s_nullContext );
@@ -2200,6 +2202,7 @@ void Tr2RenderContextAL::AddGpuMarker( const char* marker )
 		return;
 	}
 
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 	size_t length = strlen( marker ) + 1;
 	if( length % 4 == 0 )
 	{
@@ -2211,6 +2214,7 @@ void Tr2RenderContextAL::AddGpuMarker( const char* marker )
 	std::unique_ptr<char[]> buffer( new char[paddedLength] );
 	memcpy( buffer.get(), marker, length );
 	GFSDK_Aftermath_SetEventMarker( reinterpret_cast<GFSDK_Aftermath_ContextHandle>( m_aftermathContext ), buffer.get(), unsigned( paddedLength ) );
+#endif
 }
 
 void Tr2RenderContextAL::PushGpuMarker( const char* )
@@ -2229,6 +2233,7 @@ ALResult Tr2RenderContextAL::GetGpuStateMarker( RenderContextStatus& status, std
 	{
 		return E_FAIL;
 	}
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 	GFSDK_Aftermath_ContextData data;
 	auto amResult = GFSDK_Aftermath_GetData( 1, reinterpret_cast<const GFSDK_Aftermath_ContextHandle*>( &m_aftermathContext ), &data );
 	if( !GFSDK_Aftermath_SUCCEED( amResult ) )
@@ -2245,6 +2250,9 @@ ALResult Tr2RenderContextAL::GetGpuStateMarker( RenderContextStatus& status, std
 		marker = "";
 	}
 	return S_OK;
+#else
+	return E_FAIL;
+#endif
 }
 
 // --------------------------------------------------------------------------------------
@@ -2262,6 +2270,7 @@ ALResult Tr2RenderContextAL::GetGpuPageFaultResource(
 	{
 		return E_FAIL;
 	}
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 	GFSDK_Aftermath_PageFaultInformation info;
 	auto amResult = GFSDK_Aftermath_GetPageFaultInformation( &info );
 	if( !GFSDK_Aftermath_SUCCEED( amResult ) )
@@ -2278,6 +2287,9 @@ ALResult Tr2RenderContextAL::GetGpuPageFaultResource(
 	height = info.resourceDesc.height;
 	depth = info.resourceDesc.depth;
 	return S_OK;
+#else
+	return E_FAIL;
+#endif
 }
 
 void Tr2RenderContextAL::RenderPassHint( const Tr2ColorAttachment&, const Tr2DepthAttachment& )
