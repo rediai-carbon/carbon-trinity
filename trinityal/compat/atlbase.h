@@ -3,6 +3,12 @@
 // Used only when the MSVC ATL headers are not installed.
 // CComPtr and CComQIPtr cover the COM lifetime calls in TrinityAL.
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <Windows.h>
+#include <unknwn.h>
+
 #include <cstddef>
 
 namespace ATL
@@ -140,9 +146,11 @@ private:
 	template <typename Q>
 	void Adopt( Q* source )
 	{
-		this->Release();
+		T* queried = nullptr;
 		if( source )
-			source->QueryInterface( __uuidof( T ), reinterpret_cast<void**>( &this->p ) );
+			source->QueryInterface( __uuidof( T ), reinterpret_cast<void**>( &queried ) );
+		this->Release();
+		this->p = queried;
 	}
 };
 

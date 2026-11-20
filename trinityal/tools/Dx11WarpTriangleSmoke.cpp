@@ -183,17 +183,19 @@ int main()
 		return 1;
 
 	const uint32_t corner = ReadPixel( readback, width - 1, 0, context, width, height );
-	const uint32_t center = ReadPixel( readback, width / 2, height / 2, context, width, height );
-	std::printf( "CORNER 0x%08x CENTER 0x%08x\n", corner, center );
+	// Off the hypotenuse; center (32,32) lies on the edge with a top-left fill rule.
+	const uint32_t inside = ReadPixel( readback, 24, 40, context, width, height );
+	const uint32_t outside = ReadPixel( readback, 40, 24, context, width, height );
+	std::printf( "CORNER 0x%08x INSIDE 0x%08x OUTSIDE 0x%08x\n", corner, inside, outside );
 
-	if( corner != kClearGreen )
+	if( corner != kClearGreen || outside != kClearGreen )
 	{
-		std::printf( "CORNER_NOT_CLEAR\n" );
+		std::printf( "OUTSIDE_NOT_CLEAR\n" );
 		return 1;
 	}
-	if( center != kRedBgra )
+	if( inside != kRedBgra )
 	{
-		std::printf( "CENTER_NOT_RED expected 0x%08x\n", kRedBgra );
+		std::printf( "INSIDE_NOT_RED expected 0x%08x\n", kRedBgra );
 		return 1;
 	}
 	std::printf( "TRINITY_DX11_WARP_TRIANGLE_OK\n" );
