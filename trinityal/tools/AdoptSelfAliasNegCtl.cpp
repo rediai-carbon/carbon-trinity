@@ -1,6 +1,6 @@
+#include <cstdio>
 #include <Windows.h>
 #include <unknwn.h>
-#include <cstdio>
 
 #include "compat/atlbase.h"
 
