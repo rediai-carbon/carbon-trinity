@@ -1,13 +1,10 @@
 #include <cstdio>
 #include <Windows.h>
 
-#if __has_include( <atlbase.h> )
-#include <atlbase.h>
-#define TRINITY_AL_USE_SYSTEM_ATL 1
-#else
+// MSVC 14.52 system ATL fails to instantiate CComQIPtr<IUnknown> (C2535).
+// This smoke covers the ATL-free shim used when those headers are absent.
 #include "compat/atlbase.h"
 #define TRINITY_AL_USE_SYSTEM_ATL 0
-#endif
 
 namespace
 {
