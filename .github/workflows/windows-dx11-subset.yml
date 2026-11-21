@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CARBON_CORE_REF: 8b9d303e7374c869b3e7e056d24f57ba0d91c6a1
+  CARBON_CORE_REF: b966d4d7aaad050dd639958319d5779efe99272c
   CARBON_IMAGEIO_REF: 8fa59ce454956629a3b41ec697597c7fabb15271
 
 jobs:
