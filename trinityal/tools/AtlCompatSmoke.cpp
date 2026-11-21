@@ -77,6 +77,20 @@ int main()
 	if( !Expect( true, "Destroyed" ) )
 		return 1;
 
+	{
+		FakeUnknown* raw2 = new FakeUnknown();
+		CComPtr<FakeUnknown> holder;
+		holder.Attach( raw2 );
+		CComQIPtr<IUnknown> qi( holder );
+		if( !Expect( qi.p != nullptr, "QIPtr_IUnknown" ) )
+			return 1;
+		IUnknown* self = qi.p;
+		qi = self;
+		if( !Expect( qi.p == self && raw2->refs >= 1, "QIPtr_self_alias" ) )
+			return 1;
+		holder.Release();
+	}
+
 	std::printf( "ATL_COMPAT_OK\n" );
 	return 0;
 }
