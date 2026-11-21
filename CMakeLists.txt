@@ -19,6 +19,7 @@ else()
     if(WIN32)
         option(BUILD_DX11 "Build dx11." OFF)
         option(BUILD_DX12 "Build dx12." OFF)
+        option(CARBON_TRINITY_AL_ONLY "Configure TrinityAL without the engine, shader, and proprietary upscaler targets." OFF)
     elseif(APPLE)
         option(BUILD_METAL "Build Metal." OFF)
     endif()
@@ -102,8 +103,10 @@ if (BUILD_SHADER_COMPILER OR BUILD_FOR_PYTHON_2)
 endif ()
 
 add_subdirectory(trinityal)
+if(NOT CARBON_TRINITY_AL_ONLY)
 add_subdirectory(trinity)
 add_subdirectory(shaders)
+endif()
 
 if(CMAKE_PROJECT_NAME STREQUAL carbon-trinity AND NOT BUILD_FOR_PYTHON_2)
     # Determine if/when to generate/build documentation. The rules are as follows:

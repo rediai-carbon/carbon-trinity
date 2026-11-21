@@ -1,6 +1,6 @@
 // Copyright © 2024 CCP ehf.
 
-#if TRINITY_PLATFORM != TRINITY_STUB
+#if TRINITY_PLATFORM != TRINITY_STUB && !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 
 #include "StdAfx.h"
 #include "include/upscaling/Tr2Fsr1Upscaling.h"

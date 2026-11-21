@@ -2,7 +2,7 @@
 
 #include "StdAfx.h"
 
-#if TRINITY_PLATFORM == TRINITY_DIRECTX11
+#if TRINITY_PLATFORM == TRINITY_DIRECTX11 && !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 #include "Tr2StreamlineALDx11.h"
 
 

@@ -93,7 +93,9 @@ void Tr2PrimaryRenderContextAL::Destroy()
 	//m_context			= nullptr;
 	if( m_aftermathContext )
 	{
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 		GFSDK_Aftermath_ReleaseContextHandle( reinterpret_cast<GFSDK_Aftermath_ContextHandle>( m_aftermathContext ) );
+#endif
 		m_aftermathContext = nullptr;
 	}
 	m_context.Attach( (ID3D11DeviceContext*)&Tr2RenderContextImpl::s_nullContext );
@@ -193,7 +195,9 @@ ALResult Tr2PrimaryRenderContextAL::CreateDevice( uint32_t adapter,
 
 	if( m_aftermathContext )
 	{
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 		GFSDK_Aftermath_ReleaseContextHandle( reinterpret_cast<GFSDK_Aftermath_ContextHandle>( m_aftermathContext ) );
+#endif
 		m_aftermathContext = nullptr;
 	}
 
@@ -326,6 +330,7 @@ ALResult Tr2PrimaryRenderContextAL::CreateDevice( uint32_t adapter,
 	}
 
 	m_aftermathContext = nullptr;
+#if !defined( TRINITY_AL_NO_VENDOR_FEATURES )
 	if( ( dwFlags & D3D11_CREATE_DEVICE_DEBUG ) == 0 )
 	{
 		auto amResult = GFSDK_Aftermath_DX11_Initialize( GFSDK_Aftermath_Version_API, GFSDK_Aftermath_FeatureFlags_Maximum, m_d3dDevice11 );
@@ -369,6 +374,7 @@ ALResult Tr2PrimaryRenderContextAL::CreateDevice( uint32_t adapter,
 			}
 		}
 	}
+#endif
 
 	// Disable Windows support for alt-enter fullscreen
 	if( adapterPtr )

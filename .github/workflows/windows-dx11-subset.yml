@@ -1,0 +1,56 @@
+name: windows-dx11-subset
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-dx11-subset-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARBON_CORE_REF: e704f5208cfcf2ead0d74a43d8d37819229730ae
+  CARBON_IMAGEIO_REF: f729091c1de4cb4fd73dce9605e56753f24446ca
+
+jobs:
+  dx11-warp-smokes:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: carbon-trinity
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: x64
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: rediai-carbon/carbon-core
+          ref: ${{ env.CARBON_CORE_REF }}
+          path: carbon-core
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: rediai-carbon/carbon-imageio
+          ref: ${{ env.CARBON_IMAGEIO_REF }}
+          path: carbon-imageio
+      - name: Install zlib/png/jpeg (vcpkg, public ports)
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg $env:RUNNER_TEMP\vcpkg
+          & $env:RUNNER_TEMP\vcpkg\bootstrap-vcpkg.bat
+          & $env:RUNNER_TEMP\vcpkg\vcpkg install zlib:x64-windows libpng:x64-windows libjpeg-turbo:x64-windows --triplet x64-windows
+          echo "CMAKE_PREFIX_PATH=$env:RUNNER_TEMP\vcpkg\installed\x64-windows" >> $env:GITHUB_ENV
+      - name: Build and run subset
+        shell: pwsh
+        working-directory: carbon-trinity
+        env:
+          CARBON_CORE_PATH: ${{ github.workspace }}/carbon-core
+          CARBON_IMAGEIO_PATH: ${{ github.workspace }}/carbon-imageio
+        run: |
+          $zlib = "$env:RUNNER_TEMP\vcpkg\installed\x64-windows"
+          $env:CMAKE_PREFIX_PATH = "$zlib;$env:CMAKE_PREFIX_PATH"
+          ./scripts/ci/windows_dx11_subset.ps1
