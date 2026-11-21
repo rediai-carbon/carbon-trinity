@@ -165,7 +165,8 @@ int main()
 	if( !Ok( "SetCullNone", context.SetRenderState( Tr2RenderContextEnum::RS_CULLMODE, Tr2RenderContextEnum::CULLMODE_NONE ) ) )
 		return 1;
 
-	const float vertices[] = {
+	const float vertices[] =
+	{
 		-0.5f, -0.5f, 0.0f,
 		-0.5f, 0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,

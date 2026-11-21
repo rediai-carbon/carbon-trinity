@@ -25,11 +25,13 @@ struct FakeUnknown : public IUnknown
 		*out = nullptr;
 		return E_NOINTERFACE;
 	}
-	STDMETHODIMP_(ULONG) AddRef() override
+
+	STDMETHODIMP_( ULONG ) AddRef() override
 	{
 		return ++refs;
 	}
-	STDMETHODIMP_(ULONG) Release() override
+
+	STDMETHODIMP_( ULONG ) Release() override
 	{
 		const auto next = --refs;
 		if( next == 0 )

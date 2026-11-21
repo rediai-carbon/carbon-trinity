@@ -14,7 +14,7 @@ if (-not $imageioSrc) { throw "CARBON_IMAGEIO_PATH required" }
 
 cmake -S $coreSrc -B (Join-Path $Deps "core-build") -G Ninja `
   -DCMAKE_BUILD_TYPE=Release `
-  -DCMAKE_INSTALL_PREFIX=$Prefix `
+  -DCMAKE_INSTALL_PREFIX="$Prefix" `
   -DCMAKE_CXX_STANDARD=17 `
   -DWITH_TELEMETRY=OFF `
   -DBUILD_TESTING=OFF `
@@ -22,15 +22,19 @@ cmake -S $coreSrc -B (Join-Path $Deps "core-build") -G Ninja `
   -DVCPKG_MANIFEST_MODE=OFF
 cmake --build (Join-Path $Deps "core-build") --target install CoreConversionSmoke
 
+$env:PATH = "$Prefix\bin;$env:PATH"
 $coreSmoke = Join-Path $Deps "core-build\CoreConversionSmoke.exe"
 & $coreSmoke | Tee-Object -Variable coreOut
 $coreText = ($coreOut | Out-String)
 if ($LASTEXITCODE -ne 0 -or ($coreText -notmatch "CORE_CONVERSION_SMOKE_OK")) { throw "CoreConversionSmoke failed" }
 
+$depPrefix = $Prefix
+if ($env:CMAKE_PREFIX_PATH) { $depPrefix = "$Prefix;$env:CMAKE_PREFIX_PATH" }
+
 cmake -S $imageioSrc -B (Join-Path $Deps "imageio-build") -G Ninja `
   -DCMAKE_BUILD_TYPE=Release `
-  -DCMAKE_INSTALL_PREFIX=(Join-Path $Prefix "imageio") `
-  -DCMAKE_PREFIX_PATH=$Prefix `
+  -DCMAKE_INSTALL_PREFIX="$(Join-Path $Prefix 'imageio')" `
+  -DCMAKE_PREFIX_PATH="$depPrefix" `
   -DCMAKE_CXX_STANDARD=17 `
   -DCARBON_IMAGEIO_WITH_NANOVDB=OFF `
   -DBUILD_TESTING=OFF
@@ -38,7 +42,7 @@ cmake --build (Join-Path $Deps "imageio-build") --target install
 
 cmake -S (Join-Path $Root "ci\super-dx11-subset") -B $SuperBuild -G Ninja `
   -DCMAKE_BUILD_TYPE=Release `
-  -DCMAKE_PREFIX_PATH=$Prefix `
+  -DCMAKE_PREFIX_PATH="$depPrefix" `
   -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL `
   -DCARBON_TRINITY_SOURCE_DIR=$Root `
   -DCARBON_IMAGEIO_SOURCE_DIR=$imageioSrc `
