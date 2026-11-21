@@ -20,20 +20,17 @@ class CComPtr
 public:
 	T* p;
 
-	CComPtr()
-		: p( nullptr )
+	CComPtr() : p( nullptr )
 	{
 	}
 
-	CComPtr( T* source )
-		: p( source )
+	CComPtr( T* source ) : p( source )
 	{
 		if( p )
 			p->AddRef();
 	}
 
-	CComPtr( const CComPtr& other )
-		: p( other.p )
+	CComPtr( const CComPtr& other ) : p( other.p )
 	{
 		if( p )
 			p->AddRef();

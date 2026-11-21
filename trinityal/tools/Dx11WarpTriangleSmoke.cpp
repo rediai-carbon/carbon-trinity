@@ -165,11 +165,16 @@ int main()
 	if( !Ok( "SetCullNone", context.SetRenderState( Tr2RenderContextEnum::RS_CULLMODE, Tr2RenderContextEnum::CULLMODE_NONE ) ) )
 		return 1;
 
-	const float vertices[] =
-	{
-		-0.5f, -0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
+	const float vertices[] = {
+		-0.5f,
+		-0.5f,
+		0.0f,
+		-0.5f,
+		0.5f,
+		0.0f,
+		0.5f,
+		-0.5f,
+		0.0f,
 	};
 	if( !Ok( "DrawUP", context.DrawPrimitiveUP( 1, vertices, sizeof( float ) * 3 ) ) )
 		return 1;

@@ -27,7 +27,7 @@
 #endif
 
 #include <Windows.h>
-#if __has_include(<atlbase.h>)
+#if __has_include( <atlbase.h>)
 #include <atlbase.h>
 #else
 #include "compat/atlbase.h"

@@ -27,12 +27,14 @@ struct Probe : public IUnknown
 		return E_NOINTERFACE;
 	}
 
-	STDMETHODIMP_( ULONG ) AddRef() override
+	STDMETHODIMP_( ULONG )
+	AddRef() override
 	{
 		return ++refs;
 	}
 
-	STDMETHODIMP_( ULONG ) Release() override
+	STDMETHODIMP_( ULONG )
+	Release() override
 	{
 		const ULONG next = --refs;
 		if( next == 0 )
