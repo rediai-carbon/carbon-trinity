@@ -24,7 +24,8 @@ cmake --build (Join-Path $Deps "core-build") --target install CoreConversionSmok
 
 $coreSmoke = Join-Path $Deps "core-build\CoreConversionSmoke.exe"
 & $coreSmoke | Tee-Object -Variable coreOut
-if ($LASTEXITCODE -ne 0 -or ($coreOut -notmatch "CORE_CONVERSION_SMOKE_OK")) { throw "CoreConversionSmoke failed" }
+$coreText = ($coreOut | Out-String)
+if ($LASTEXITCODE -ne 0 -or ($coreText -notmatch "CORE_CONVERSION_SMOKE_OK")) { throw "CoreConversionSmoke failed" }
 
 cmake -S $imageioSrc -B (Join-Path $Deps "imageio-build") -G Ninja `
   -DCMAKE_BUILD_TYPE=Release `

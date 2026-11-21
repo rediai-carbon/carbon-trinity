@@ -24,6 +24,9 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: carbon-trinity
+      - uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: x64
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: rediai-carbon/carbon-core
