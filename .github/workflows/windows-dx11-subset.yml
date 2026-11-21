@@ -14,7 +14,7 @@ concurrency:
 
 env:
   CARBON_CORE_REF: e704f5208cfcf2ead0d74a43d8d37819229730ae
-  CARBON_IMAGEIO_REF: e553b845a5d6d85b43b94865e5c59c32c4fed909
+  CARBON_IMAGEIO_REF: f729091c1de4cb4fd73dce9605e56753f24446ca
 
 jobs:
   dx11-warp-smokes:
