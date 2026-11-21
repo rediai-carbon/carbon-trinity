@@ -13,8 +13,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CARBON_CORE_REF: 0c376f39187946042f55a095217eb6a91491009f
-  CARBON_IMAGEIO_REF: 7a2d56cbf0e01501d269a8be234f1fc615b0f1de
+  CARBON_CORE_REF: e704f5208cfcf2ead0d74a43d8d37819229730ae
+  CARBON_IMAGEIO_REF: 076249bd6afb1a9e25e5106cafb1711236b61757
 
 jobs:
   dx11-warp-smokes:
